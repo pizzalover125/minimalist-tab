@@ -12,21 +12,21 @@
 
 ### Time + Date
 
-`/time`: Show/hide time
-`/date`: Show/hide date
-`/24hr`: Set clock to military time
-`/12hr`: Set clock to standard time
-`/progress`: Show the progress of the day/hour
-`/hour`: Show progress of current hour
-`/day`: Show progress of current date
+- `/time`: Show/hide time
+- `/date`: Show/hide date
+- `/24hr`: Set clock to military time
+- `/12hr`: Set clock to standard time
+- `/progress`: Show the progress of the day/hour
+- `/hour`: Show progress of current hour
+- `/day`: Show progress of current date
 
 ### Weather
 
-`/weather`: Show/hide weather
-`/c`: Show weather in celsius
-`/f`: Show weather in farenheit
+- `/weather`: Show/hide weather
+- `/c`: Show weather in celsius
+- `/f`: Show weather in farenheit
 
 ### Quick Links
 
-`/add "[Title]" "[URL]"`: Add quick link to "URL" with the heading "Title"
-`/remove "[Title]"`: Remove quick link to "Title"
+- `/add "[Title]" "[URL]"`: Add quick link to "URL" with the heading "Title"
+- `/remove "[Title]"`: Remove quick link to "Title"
