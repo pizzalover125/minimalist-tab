@@ -10,7 +10,7 @@
 
 ## Using the extension
 
-### Time + Date
+### Time
 
 - `/time`: Show/hide time
 - `/date`: Show/hide date
