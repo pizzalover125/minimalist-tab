@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="install-banner">
+      Want to make this your homepage? Install
+      <a href="extension.zip" target="_blank">now</a>!
+      <!-- TODO: Update link over time-->
+    </div>
+
+    <div class="container">
+      <div class="time" id="time"></div>
+      <div class="date" id="date"></div>
+      <div class="weather" id="weather"></div>
+
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-box"
+          placeholder="Search or enter URL"
+          id="searchBox"
+        />
+      </div>
+
+      <div class="quick-links" id="quickLinks"></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

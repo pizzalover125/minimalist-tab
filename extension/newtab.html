@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Tab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="newtab.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="time" id="time"></div>
+      <div class="date" id="date"></div>
+      <div class="weather" id="weather"></div>
+
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-box"
+          placeholder="Search or enter URL"
+          id="searchBox"
+        />
+      </div>
+
+      <div class="progress" id="progress">
+        <div class="progress-container">
+          <div class="progress-bar"></div>
+        </div>
+        <div class="progress-text"></div>
+      </div>
+
+      <div class="quick-links" id="quickLinks"></div>
+    </div>
+
+    <div class="modal" id="linkModal">
+      <div class="modal-content">
+        <h3 id="modalTitle">Edit Quick Link</h3>
+        <input type="text" id="linkTitle" placeholder="Link title" />
+        <input type="text" id="linkUrl" placeholder="https://example.com" />
+        <div class="modal-buttons">
+          <button class="btn" id="cancelBtn">Cancel</button>
+          <button class="btn btn-primary" id="saveBtn">Save</button>
+          <button class="btn btn-danger" id="deleteBtn" style="display: none">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="newtab.js"></script>
+  </body>
+</html>

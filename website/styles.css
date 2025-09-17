@@ -1,0 +1,144 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter";
+}
+
+body {
+  background: black;
+  color: white;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-weight: 300;
+  height: 100vh;
+  overflow: hidden;
+  cursor: default;
+}
+
+.install-banner {
+  text-align: center;
+  background: black;
+  color: white;
+  font-weight: 500;
+  padding: 1rem;
+  font-size: 1.25rem;
+}
+
+.install-banner a {
+  text-decoration: underline;
+  color: white;
+  transition: color 0.2s;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 60px);
+  padding: 2rem;
+  opacity: 0;
+  animation: fadeIn 1s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.time {
+  font-size: clamp(4rem, 12vw, 8rem);
+  font-weight: 200;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.date {
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  font-weight: 300;
+  color: #888888;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.weather {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-weight: 300;
+  color: #aaaaaa;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.search-container {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.search-box {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #333333;
+  border-radius: 2px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 300;
+  color: white;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-box:focus {
+  border-color: #555555;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.search-box::placeholder {
+  color: #666666;
+}
+
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.quick-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.quick-link:hover {
+  background: rgba(255, 255, 255, 0.02);
+  border-color: #333333;
+  transform: translateY(-2px);
+}
+
+.favicon {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 0.75rem;
+  filter: grayscale(100%) brightness(200%) contrast(200%);
+}
+
+.link-title {
+  font-size: 0.875rem;
+  font-weight: 400;
+  text-align: center;
+  opacity: 0.9;
+}
