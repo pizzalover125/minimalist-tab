@@ -13,7 +13,7 @@ Declutter your homepage the right way.
 5. Select the folder
 6. Enjoy! 💖
 
-> Chrome Web Store support coming soon!
+> Chrome Web Store + Firefox Add-ons Store support coming soon!
 
 ### Using the extension
 
@@ -25,7 +25,11 @@ Declutter your homepage the right way.
 - `/12hr`: Set clock to standard time
 - `/progress`: Show the progress of the day/hour
 - `/hour`: Show progress of current hour
-- `/day`: Show progress of current date
+- `/day`: Show progress of current day
+
+- `/pomodoro "[Work Time In Minutes]" "[Break Time In Minutes]"`: Turn on/off a Pomodoro timer with specified intervals
+- `/timer "[Minutes]" "[Seconds]"`: Turn on/off a countdown timer with specified `Minutes` and `Seconds`
+- `/stopwatch`: Turn on/off a stopwatch
 
 #### Weather
 
@@ -35,18 +39,14 @@ Declutter your homepage the right way.
 
 #### Quick Links
 
-- `/add "[Title]" "[URL]"`: Add quick link to "URL" with the heading "Title"
-- `/remove "[Title]"`: Remove quick link to "Title"
+- `/add "[Title]" "[URL]"`: Add quick link to `URL` with the heading `Title`
+- `/remove "[Title]"`: Remove quick link to `Title`
+- Left-click on a quick-link to edit it
 
 ## Contribute
 
-Simply submit a PR!
+Simply submit a PR! I should eventually get to it...
 
 ## Support
 
-Please email me at chessthinker600@gmail.com.
-
-## Planned Features
-
-- Timer
-- Custom fonts
+Please email me at chessthinker600@gmail.com. Although, if you have a problem, just submit a PR.

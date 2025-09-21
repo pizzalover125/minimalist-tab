@@ -40,6 +40,16 @@ body.pomodoro-break::before {
   opacity: 0.0967;
 }
 
+body.timer-active::before {
+  background: #ffa500;
+  opacity: 0.0967;
+}
+
+body.stopwatch-active::before {
+  background: #00ff00;
+  opacity: 0.0967;
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -113,6 +123,14 @@ body.pomodoro-break .date {
   color: #4ecdc4;
 }
 
+body.timer-active .date {
+  color: #ffa500;
+}
+
+body.stopwatch-active .date {
+  color: #00ff00;
+}
+
 .pomodoro-status {
   position: fixed;
   top: 2rem;
@@ -139,6 +157,14 @@ body.pomodoro-work .weather {
 
 body.pomodoro-break .weather {
   color: #4ecdc4;
+}
+
+body.timer-active .weather {
+  color: #ffa500;
+}
+
+body.stopwatch-active .weather {
+  color: #00ff00;
 }
 
 .search-container {
@@ -185,7 +211,9 @@ body.pomodoro-break .weather {
 }
 
 body.pomodoro-work .search-progress,
-body.pomodoro-break .search-progress {
+body.pomodoro-break .search-progress,
+body.timer-active .search-progress,
+body.stopwatch-active .search-progress {
   opacity: 1;
 }
 
@@ -195,6 +223,14 @@ body.pomodoro-work .search-progress {
 
 body.pomodoro-break .search-progress {
   background: linear-gradient(90deg, transparent, rgba(78, 205, 196, 0.03));
+}
+
+body.timer-active .search-progress {
+  background: linear-gradient(90deg, transparent, rgba(255, 165, 0, 0.03));
+}
+
+body.stopwatch-active .search-progress {
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.03));
 }
 
 body.pomodoro-work .search-box {
@@ -221,6 +257,32 @@ body.pomodoro-break .search-box:hover {
   border-color: #4ecdc4;
   box-shadow: 0 0 16px 4px rgba(78, 205, 196, 0.5);
   background: rgba(78, 205, 196, 0.02);
+}
+
+body.timer-active .search-box {
+  border-color: #ffa500;
+  box-shadow: 0 0 12px 2px rgba(255, 165, 0, 0.3);
+  background: transparent;
+}
+
+body.timer-active .search-box:focus,
+body.timer-active .search-box:hover {
+  border-color: #ffa500;
+  box-shadow: 0 0 16px 4px rgba(255, 165, 0, 0.5);
+  background: rgba(255, 165, 0, 0.02);
+}
+
+body.stopwatch-active .search-box {
+  border-color: #00ff00;
+  box-shadow: 0 0 12px 2px rgba(0, 255, 0, 0.3);
+  background: transparent;
+}
+
+body.stopwatch-active .search-box:focus,
+body.stopwatch-active .search-box:hover {
+  border-color: #00ff00;
+  box-shadow: 0 0 16px 4px rgba(0, 255, 0, 0.5);
+  background: rgba(0, 255, 0, 0.02);
 }
 
 .search-box::placeholder {
@@ -263,6 +325,16 @@ body.pomodoro-work .quick-link:hover {
 body.pomodoro-break .quick-link:hover {
   background: rgba(78, 205, 196, 0.05);
   border-color: #4ecdc4;
+}
+
+body.timer-active .quick-link:hover {
+  background: rgba(255, 165, 0, 0.05);
+  border-color: #ffa500;
+}
+
+body.stopwatch-active .quick-link:hover {
+  background: rgba(0, 255, 0, 0.05);
+  border-color: #00ff00;
 }
 
 .favicon {
@@ -400,6 +472,14 @@ body.pomodoro-break .progress-bar {
   background: linear-gradient(90deg, #4ecdc4, #7dd8d3);
 }
 
+body.timer-active .progress-bar {
+  background: linear-gradient(90deg, #ffa500, #ffb84d);
+}
+
+body.stopwatch-active .progress-bar {
+  background: linear-gradient(90deg, #00ff00, #4dff4d);
+}
+
 .progress-text {
   font-size: 0.875rem;
   font-weight: 300;
@@ -413,4 +493,12 @@ body.pomodoro-work .progress-text {
 
 body.pomodoro-break .progress-text {
   color: #4ecdc4;
+}
+
+body.timer-active .progress-text {
+  color: #ffa500;
+}
+
+body.stopwatch-active .progress-text {
+  color: #00ff00;
 }
