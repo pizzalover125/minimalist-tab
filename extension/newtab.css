@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Inter";
+  transition: all 0.67s ease;
 }
 
 body {
@@ -13,6 +14,30 @@ body {
   height: 100vh;
   overflow: hidden;
   cursor: default;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body.pomodoro-work::before {
+  background: #ff6b6b;
+  opacity: 0.0967;
+}
+
+body.pomodoro-break::before {
+  background: #4ecdc4;
+  opacity: 0.0967;
 }
 
 .container {
@@ -24,6 +49,7 @@ body {
   padding: 2rem;
   opacity: 0;
   animation: fadeIn 1s ease-out forwards;
+  position: relative;
 }
 
 @keyframes fadeIn {
@@ -32,12 +58,40 @@ body {
   }
 }
 
+.timer-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  z-index: -1;
+}
+
+.timer-border {
+  width: 280px;
+  height: 280px;
+  transform: rotate(-90deg);
+}
+
+.timer-border circle {
+  fill: none;
+  stroke: #ff6b6b;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 754;
+  stroke-dashoffset: 754;
+  transition: stroke-dashoffset 1s ease, stroke 0.3s ease;
+  filter: drop-shadow(0 0 8px #ff6b6b40);
+}
+
 .time {
   font-size: clamp(4rem, 12vw, 8rem);
   font-weight: 200;
   letter-spacing: -0.02em;
   margin-bottom: 1rem;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .date {
@@ -46,6 +100,28 @@ body {
   color: #888888;
   margin-bottom: 1rem;
   text-align: center;
+  position: relative;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+body.pomodoro-work .date {
+  color: #ff6b6b;
+}
+
+body.pomodoro-break .date {
+  color: #4ecdc4;
+}
+
+.pomodoro-status {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  z-index: 10;
+  display: none;
 }
 
 .weather {
@@ -54,6 +130,15 @@ body {
   color: #aaaaaa;
   margin-bottom: 3rem;
   text-align: center;
+  transition: color 0.3s ease;
+}
+
+body.pomodoro-work .weather {
+  color: #ff6b6b;
+}
+
+body.pomodoro-break .weather {
+  color: #4ecdc4;
 }
 
 .search-container {
@@ -75,11 +160,67 @@ body {
   color: #ffffff;
   outline: none;
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
 }
 
-.search-box:focus {
+.search-box:focus,
+.search-box:hover {
   border-color: #555555;
   background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 0 8px 2px rgba(85, 85, 85, 0.4);
+}
+
+.search-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: transparent;
+  border-radius: 2px;
+  transition: width 1s ease;
+  z-index: 1;
+  opacity: 0;
+}
+
+body.pomodoro-work .search-progress,
+body.pomodoro-break .search-progress {
+  opacity: 1;
+}
+
+body.pomodoro-work .search-progress {
+  background: linear-gradient(90deg, transparent, rgba(255, 107, 107, 0.03));
+}
+
+body.pomodoro-break .search-progress {
+  background: linear-gradient(90deg, transparent, rgba(78, 205, 196, 0.03));
+}
+
+body.pomodoro-work .search-box {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 12px 2px rgba(255, 107, 107, 0.3);
+  background: transparent;
+}
+
+body.pomodoro-work .search-box:focus,
+body.pomodoro-work .search-box:hover {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 16px 4px rgba(255, 107, 107, 0.5);
+  background: rgba(255, 107, 107, 0.02);
+}
+
+body.pomodoro-break .search-box {
+  border-color: #4ecdc4;
+  box-shadow: 0 0 12px 2px rgba(78, 205, 196, 0.3);
+  background: transparent;
+}
+
+body.pomodoro-break .search-box:focus,
+body.pomodoro-break .search-box:hover {
+  border-color: #4ecdc4;
+  box-shadow: 0 0 16px 4px rgba(78, 205, 196, 0.5);
+  background: rgba(78, 205, 196, 0.02);
 }
 
 .search-box::placeholder {
@@ -114,6 +255,16 @@ body {
   transform: translateY(-2px);
 }
 
+body.pomodoro-work .quick-link:hover {
+  background: rgba(255, 107, 107, 0.05);
+  border-color: #ff6b6b;
+}
+
+body.pomodoro-break .quick-link:hover {
+  background: rgba(78, 205, 196, 0.05);
+  border-color: #4ecdc4;
+}
+
 .favicon {
   width: 32px;
   height: 32px;
@@ -137,13 +288,11 @@ body {
   height: 100%;
   background: rgba(0, 0, 0, 0.9);
   z-index: 1000;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   background: #111111;
   border: 1px solid #333333;
   border-radius: 2px;
@@ -240,11 +389,28 @@ body {
   height: 100%;
   background: linear-gradient(90deg, #666666, #aaaaaa);
   width: 0%;
-  transition: width 1s ease;
+  transition: width 1s ease, background 0.3s ease;
+}
+
+body.pomodoro-work .progress-bar {
+  background: linear-gradient(90deg, #ff6b6b, #ff8a8a);
+}
+
+body.pomodoro-break .progress-bar {
+  background: linear-gradient(90deg, #4ecdc4, #7dd8d3);
 }
 
 .progress-text {
   font-size: 0.875rem;
   font-weight: 300;
   color: #888888;
+  transition: color 0.3s ease;
+}
+
+body.pomodoro-work .progress-text {
+  color: #ff6b6b;
+}
+
+body.pomodoro-break .progress-text {
+  color: #4ecdc4;
 }

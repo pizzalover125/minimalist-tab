@@ -8,6 +8,14 @@ let showProgress = false;
 let progressType = "day";
 let useCelsius = true;
 let weatherUpdateInterval = null;
+let pomodoroActive = false;
+let pomodoroWorkTime = 25;
+let pomodoroBreakTime = 5;
+let pomodoroTimer = null;
+let pomodoroEndTime = null;
+let pomodoroIsWork = true;
+let pomodoroSessions = 0;
+let audioContext = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   chrome.storage.sync.get(
@@ -20,6 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
       "showProgress",
       "progressType",
       "useCelsius",
+      "pomodoroActive",
+      "pomodoroWorkTime",
+      "pomodoroBreakTime",
+      "pomodoroEndTime",
+      "pomodoroIsWork",
+      "pomodoroSessions",
     ],
     (result) => {
       quickLinks = result.quickLinks || [
@@ -34,10 +48,27 @@ document.addEventListener("DOMContentLoaded", () => {
       showProgress = result.showProgress ?? false;
       progressType = result.progressType ?? "day";
       useCelsius = result.useCelsius ?? true;
+      pomodoroActive = result.pomodoroActive ?? false;
+      pomodoroWorkTime = result.pomodoroWorkTime ?? 25;
+      pomodoroBreakTime = result.pomodoroBreakTime ?? 5;
+      pomodoroEndTime = result.pomodoroEndTime
+        ? new Date(result.pomodoroEndTime)
+        : null;
+      pomodoroIsWork = result.pomodoroIsWork ?? true;
+      pomodoroSessions = result.pomodoroSessions ?? 0;
 
       renderQuickLinks();
+
+      if (pomodoroActive && pomodoroEndTime && pomodoroEndTime > new Date()) {
+        startPomodoroTimer();
+      } else if (pomodoroActive) {
+        pomodoroActive = false;
+        chrome.storage.sync.set({ pomodoroActive: false });
+      }
+
       updateTime();
       updateProgress();
+      updatePomodoroBackground();
 
       if (showWeather) {
         updateWeather();
@@ -71,11 +102,80 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 1000);
 });
 
+function updatePomodoroBackground() {
+  const body = document.body;
+
+  body.classList.remove("pomodoro-work", "pomodoro-break");
+
+  if (pomodoroActive) {
+    if (pomodoroIsWork) {
+      body.classList.add("pomodoro-work");
+    } else {
+      body.classList.add("pomodoro-break");
+    }
+  }
+}
+
+function initAudioContext() {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  return audioContext;
+}
+
+function playBeep(frequency = 800, duration = 200, volume = 1) {
+  try {
+    const ctx = initAudioContext();
+
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.frequency.value = frequency;
+    oscillator.type = "sine";
+
+    gainNode.gain.setValueAtTime(volume, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.01,
+      ctx.currentTime + duration / 1000
+    );
+
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + duration / 1000);
+  } catch (error) {
+    console.warn("Could not play beep sound:", error);
+  }
+}
+
+function playPomodoroSound(isWorkEnding) {
+  if (isWorkEnding) {
+    playBeep(800, 150, 1);
+    setTimeout(() => playBeep(800, 150, 1), 200);
+    setTimeout(() => playBeep(800, 150, 1), 400);
+  } else {
+    playBeep(600, 250, 1);
+    setTimeout(() => playBeep(600, 250, 1), 350);
+  }
+}
+
+function openInNewTab(url) {
+  if (typeof chrome !== "undefined" && chrome.tabs && chrome.tabs.create) {
+    chrome.tabs.create({ url: url });
+  } else {
+    window.open(url, "_blank");
+  }
+}
+
 function handleCommand(query) {
+  initAudioContext();
+
   if (!query) return;
 
   const addCommandRegex = /^\/add\s+"(.+?)"\s+"(.+?)"$/;
   const removeCommandRegex = /^\/remove\s+"(.+?)"$/;
+  const pomodoroCommandRegex = /^\/pomodoro(?:\s+"(\d+)"\s+"(\d+)")?$/;
 
   if (addCommandRegex.test(query)) {
     const [, title, url] = query.match(addCommandRegex);
@@ -89,6 +189,21 @@ function handleCommand(query) {
     const [, titleToRemove] = query.match(removeCommandRegex);
     quickLinks = quickLinks.filter((link) => link.title !== titleToRemove);
     chrome.storage.sync.set({ quickLinks }, renderQuickLinks);
+    return;
+  }
+
+  if (pomodoroCommandRegex.test(query)) {
+    const match = query.match(pomodoroCommandRegex);
+    if (match[1] && match[2]) {
+      pomodoroWorkTime = parseInt(match[1]);
+      pomodoroBreakTime = parseInt(match[2]);
+    }
+
+    if (pomodoroActive) {
+      stopPomodoro();
+    } else {
+      startPomodoro();
+    }
     return;
   }
 
@@ -155,37 +270,198 @@ function handleCommand(query) {
     const finalUrl = query.startsWith("http") ? query : "https://" + query;
     const existingIndex = quickLinks.findIndex((link) => link.url === finalUrl);
     if (existingIndex >= 0) {
-      window.location.href = finalUrl;
+      if (pomodoroActive) {
+        openInNewTab(finalUrl);
+      } else {
+        window.location.href = finalUrl;
+      }
     } else {
       showAddLinkModal();
       document.getElementById("linkUrl").value = finalUrl;
       document.getElementById("linkTitle").focus();
     }
   } else {
-    window.location.href =
+    const searchUrl =
       "https://www.google.com/search?q=" + encodeURIComponent(query);
+    if (pomodoroActive) {
+      openInNewTab(searchUrl);
+    } else {
+      window.location.href = searchUrl;
+    }
+  }
+}
+
+function startPomodoro() {
+  initAudioContext();
+
+  pomodoroActive = true;
+  pomodoroIsWork = true;
+  pomodoroEndTime = new Date(Date.now() + pomodoroWorkTime * 60 * 1000);
+
+  chrome.storage.sync.set({
+    pomodoroActive: true,
+    pomodoroWorkTime,
+    pomodoroBreakTime,
+    pomodoroEndTime: pomodoroEndTime.toISOString(),
+    pomodoroIsWork: true,
+    pomodoroSessions,
+  });
+
+  updatePomodoroBackground();
+  startPomodoroTimer();
+}
+
+function stopPomodoro() {
+  pomodoroActive = false;
+  if (pomodoroTimer) {
+    clearTimeout(pomodoroTimer);
+    pomodoroTimer = null;
+  }
+
+  chrome.storage.sync.set({
+    pomodoroActive: false,
+    pomodoroEndTime: null,
+  });
+
+  updatePomodoroBackground();
+  updateTime();
+}
+
+function startPomodoroTimer() {
+  if (pomodoroTimer) {
+    clearTimeout(pomodoroTimer);
+  }
+
+  const updatePomodoroDisplay = () => {
+    const now = new Date();
+    const timeLeft = Math.max(0, pomodoroEndTime.getTime() - now.getTime());
+
+    if (timeLeft <= 0) {
+      if (pomodoroIsWork) {
+        pomodoroSessions++;
+        pomodoroIsWork = false;
+        pomodoroEndTime = new Date(Date.now() + pomodoroBreakTime * 60 * 1000);
+
+        playPomodoroSound(true);
+        showNotification("Work session complete! Time for a break.");
+      } else {
+        pomodoroIsWork = true;
+        pomodoroEndTime = new Date(Date.now() + pomodoroWorkTime * 60 * 1000);
+
+        playPomodoroSound(false);
+        showNotification("Break time over! Back to work.");
+      }
+
+      chrome.storage.sync.set({
+        pomodoroEndTime: pomodoroEndTime.toISOString(),
+        pomodoroIsWork,
+        pomodoroSessions,
+      });
+
+      updatePomodoroBackground();
+    }
+
+    updateTime();
+
+    if (pomodoroActive) {
+      pomodoroTimer = setTimeout(updatePomodoroDisplay, 1000);
+    }
+  };
+
+  updatePomodoroDisplay();
+}
+
+function showNotification(message) {
+  if (Notification.permission === "granted") {
+    new Notification("Pomodoro Timer", {
+      body: message,
+      icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23ff6b6b'/%3E%3Ctext x='32' y='40' text-anchor='middle' fill='white' font-size='24'%3E🍅%3C/text%3E%3C/svg%3E",
+    });
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then((permission) => {
+      if (permission === "granted") {
+        showNotification(message);
+      }
+    });
   }
 }
 
 function updateTime() {
   const now = new Date();
-  const timeStr = now.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: !use24Hour,
-  });
-  const dateStr = now.toLocaleDateString([], {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const pomodoroStatusEl = document.getElementById("pomodoroStatus");
+  const searchProgressEl = document.getElementById("searchProgress");
 
-  document.getElementById("time").style.display = showTime ? "block" : "none";
-  document.getElementById("date").style.display = showDate ? "block" : "none";
+  if (pomodoroActive && pomodoroEndTime) {
+    const timeLeft = Math.max(0, pomodoroEndTime.getTime() - now.getTime());
+    const minutes = Math.floor(timeLeft / (1000 * 60));
+    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-  if (showTime) document.getElementById("time").textContent = timeStr;
-  if (showDate) document.getElementById("date").textContent = dateStr;
+    const timeStr = `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
+    const sessionType = pomodoroIsWork ? "WORK" : "BREAK";
+
+    document.getElementById("time").textContent = timeStr;
+    document.getElementById("time").style.display = "block";
+    document.getElementById("date").style.display = showDate ? "block" : "none";
+
+    pomodoroStatusEl.textContent = sessionType;
+    pomodoroStatusEl.style.display = "block";
+
+    const totalTime = pomodoroIsWork
+      ? pomodoroWorkTime * 60 * 1000
+      : pomodoroBreakTime * 60 * 1000;
+    const elapsedTime = totalTime - timeLeft;
+    const progressPercent = Math.min(
+      100,
+      Math.max(0, (elapsedTime / totalTime) * 100)
+    );
+    searchProgressEl.style.width = progressPercent + "%";
+
+    const timeEl = document.getElementById("time");
+    const statusEl = document.getElementById("pomodoroStatus");
+
+    if (pomodoroIsWork) {
+      timeEl.style.color = "#ff6b6b";
+      statusEl.style.color = "#ff6b6b";
+    } else {
+      timeEl.style.color = "#4ecdc4";
+      statusEl.style.color = "#4ecdc4";
+    }
+
+    if (showDate) {
+      const dateStr = now.toLocaleDateString([], {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      document.getElementById("date").textContent = dateStr;
+    }
+  } else {
+    pomodoroStatusEl.style.display = "none";
+    searchProgressEl.style.width = "0%";
+
+    document.getElementById("time").style.color = "";
+
+    const timeStr = now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: !use24Hour,
+    });
+    const dateStr = now.toLocaleDateString([], {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    document.getElementById("time").style.display = showTime ? "block" : "none";
+    document.getElementById("date").style.display = showDate ? "block" : "none";
+
+    if (showTime) document.getElementById("time").textContent = timeStr;
+    if (showDate) document.getElementById("date").textContent = dateStr;
+  }
 }
 
 function updateProgress() {
@@ -257,9 +533,10 @@ function updateProgress() {
   }
 
   const progressBar = progressEl.querySelector(".progress-bar");
+  const progressTextEl = progressEl.querySelector(".progress-text");
 
   progressBar.style.width = progressPercent + "%";
-  progressText.textContent = progressText;
+  progressTextEl.textContent = progressText;
 }
 
 function startWeatherUpdates() {
@@ -362,6 +639,15 @@ function renderQuickLinks() {
       <img src="${faviconUrl}" alt="" class="favicon">
       <div class="link-title">${link.title}</div>
     `;
+
+    linkElement.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (pomodoroActive) {
+        openInNewTab(link.url);
+      } else {
+        window.location.href = link.url;
+      }
+    });
 
     linkElement.addEventListener("contextmenu", (e) => {
       e.preventDefault();
