@@ -43,10 +43,23 @@ Declutter your homepage the right way.
 - `/remove "[Title]"`: Remove quick link to `Title`
 - Left-click on a quick-link to edit it
 
+#### Probability
+
+- `/dice`: Roll a standard 6-sided die
+- `/dice [sides]`: Roll a die with specified number of sides (2-100)
+- `/dice [count]d[sides]`: Roll multiple dice using standard notation (e.g., `2d6`, `3d20`)
+
+- `/coin`: Flip one coin
+- `/coin [count]`: Flip multiple coins (1-50)
+
+- `/card`: Draw one card from a standard deck
+- `/card [count]`: Draw multiple cards (1-52)
+- `/card jokers`: Draw from a deck that includes jokers
+
 ## Contribute
 
 Simply submit a PR! I should eventually get to it...
 
 ## Support
 
-Please email me at chessthinker600@gmail.com. Although, if you have a problem, just submit a PR.
+Please email me at chessthinker600@gmail.com. Although, if you have a problem/error, just submit a PR/issue.

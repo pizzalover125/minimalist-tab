@@ -1,8 +1,126 @@
-// Hanndle commands.
+
+// Global variables to track current probability display
+let currentProbabilityDisplay = null;
+let currentProbabilityCommand = null;
+
+function showCommandResult(message) {
+  const searchBox = document.getElementById("searchBox");
+  const originalPlaceholder = searchBox.placeholder;
+
+  searchBox.placeholder = message;
+  searchBox.style.color = "#4ecdc4";
+
+  setTimeout(() => {
+    searchBox.placeholder = originalPlaceholder;
+    searchBox.style.color = "";
+  }, 3000);
+
+  playBeep(600, 100, 0.3);
+}
+
+function showProbabilityResult(message, commandType) {
+  const probabilityResult = document.getElementById("probabilityResult");
+  
+  // If the same command is typed again, hide the display
+  if (currentProbabilityDisplay && currentProbabilityCommand === commandType) {
+    hideProbabilityResult();
+    return;
+  }
+  
+  probabilityResult.textContent = message;
+  probabilityResult.style.display = "block";
+  currentProbabilityDisplay = message;
+  currentProbabilityCommand = commandType;
+  
+  playBeep(600, 100, 0.3);
+}
+
+function hideProbabilityResult() {
+  const probabilityResult = document.getElementById("probabilityResult");
+  probabilityResult.style.display = "none";
+  currentProbabilityDisplay = null;
+  currentProbabilityCommand = null;
+}
+
+
 function handleCommand(query) {
   initAudioContext();
 
   if (!query) return;
+
+  if (query.startsWith("/dice") || query.startsWith("/d ") || query === "/d") {
+    const args = query.split(" ").slice(1);
+
+    if (args.length === 0) {
+      rollDice();
+      return;
+    }
+
+    const input = args.join("").toLowerCase();
+
+    const diceMatch = parseDiceNotation(input);
+    if (diceMatch) {
+      rollDice(diceMatch.sides, diceMatch.count);
+      return;
+    }
+
+    const sides = parseInt(input);
+    if (!isNaN(sides)) {
+      rollDice(sides);
+      return;
+    }
+
+    showCommandResult(
+      "Usage: /dice [sides] or /dice [count]d[sides] (e.g., /dice 20 or /dice 2d6)"
+    );
+    return;
+  }
+
+  if (query.startsWith("/coin")) {
+    const args = query.split(" ").slice(1);
+
+    if (args.length === 0) {
+      flipCoin();
+      return;
+    }
+
+    const count = parseInt(args[0]);
+    if (!isNaN(count)) {
+      flipCoin(count);
+      return;
+    }
+
+    showCommandResult("Usage: /coin [count] (e.g., /coin 3)");
+    return;
+  }
+
+  if (query.startsWith("/card")) {
+    const args = query.split(" ").slice(1);
+    let count = 1;
+    let jokers = false;
+
+    for (const arg of args) {
+      const num = parseInt(arg);
+      if (!isNaN(num)) {
+        count = num;
+      } else if (
+        arg.toLowerCase() === "jokers" ||
+        arg.toLowerCase() === "joker"
+      ) {
+        jokers = true;
+      }
+    }
+
+    drawCard(count, jokers);
+    return;
+  }
+
+
+  if (query.startsWith("/roll")) {
+    const diceQuery = query.replace("/roll", "/dice");
+    handleCommand(diceQuery);
+    return;
+  }
 
   const addCommandRegex = /^\/add\s+"(.+?)"\s+"(.+?)"$/;
   const removeCommandRegex = /^\/remove\s+"(.+?)"$/;

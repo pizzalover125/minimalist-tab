@@ -502,3 +502,29 @@ body.timer-active .progress-text {
 body.stopwatch-active .progress-text {
   color: #00ff00;
 }
+
+.probability-result {
+  background: rgba(78, 205, 196, 0.1);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem auto;
+  max-width: 400px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #4ecdc4;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
