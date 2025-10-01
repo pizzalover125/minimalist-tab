@@ -56,6 +56,16 @@ Declutter your homepage the right way.
 - `/card [count]`: Draw multiple cards (1-52)
 - `/card jokers`: Draw from a deck that includes jokers
 
+#### Sticky Notes
+
+- `/note "[text]" [color]`: Create a fluorescent sticky note with the specified text and color
+- Available colors: yellow (default), pink, green, blue, orange, purple
+- Drag notes around by their header
+- Resize notes by dragging the bottom-right corner
+- Click on note content to edit
+- Click the × button to delete notes
+- Notes are automatically saved and restored
+
 ## Contribute
 
 Simply submit a PR! I should eventually get to it...

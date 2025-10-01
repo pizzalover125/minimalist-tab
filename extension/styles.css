@@ -528,3 +528,277 @@ body.stopwatch-active .progress-text {
   }
 }
 
+.sticky-note {
+  position: fixed;
+  width: 200px;
+  min-height: 150px;
+  background: linear-gradient(135deg, #ffff00, #ffff33);
+  border: 1px solid #e6e600;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(255, 255, 0, 0.3), 
+              0 2px 4px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  cursor: grab;
+  z-index: 1000;
+  animation: noteAppear 0.3s ease-out;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  user-select: none;
+  resize: none;
+  overflow: hidden;
+}
+
+.sticky-note:active {
+  cursor: grabbing;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 0, 0.2);
+  border-bottom: 1px solid rgba(230, 230, 0, 0.5);
+  border-radius: 8px 8px 0 0;
+  cursor: grab;
+}
+
+.note-drag-handle {
+  color: #b8860b;
+  font-weight: bold;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: grab;
+}
+
+.note-close {
+  background: none;
+  border: none;
+  color: #b8860b;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.note-close:hover {
+  background: rgba(184, 134, 11, 0.2);
+  color: #8b6914;
+}
+
+.note-content {
+  padding: 12px;
+  min-height: 100px;
+  color: #2c2c2c;
+  font-size: 14px;
+  line-height: 1.4;
+  outline: none;
+  border: none;
+  background: transparent;
+  resize: none;
+  overflow: hidden;
+  word-wrap: break-word;
+  cursor: text;
+  white-space: pre-wrap;
+}
+
+.note-content:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.note-content:empty:before {
+  content: "Click to edit...";
+  color: #888;
+  font-style: italic;
+}
+
+.note-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(-45deg, transparent 30%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.1) 40%, transparent 40%, transparent 60%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.1) 70%, transparent 70%);
+  cursor: nw-resize;
+  border-radius: 0 0 8px 0;
+}
+
+.note-resize-handle:hover {
+  background: linear-gradient(-45deg, transparent 30%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.2) 40%, transparent 40%, transparent 60%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.2) 70%, transparent 70%);
+}
+
+@keyframes noteAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-5deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.sticky-note:hover {
+  box-shadow: 0 6px 20px rgba(255, 255, 0, 0.4), 
+              0 4px 8px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.6),
+              0 0 20px rgba(255, 255, 0, 0.3);
+}
+
+.note-yellow {
+  background: linear-gradient(135deg, #ffff00, #ffff33);
+  border-color: #e6e600;
+  box-shadow: 0 4px 12px rgba(255, 255, 0, 0.3), 
+              0 2px 4px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.note-yellow .note-header {
+  background: rgba(255, 255, 0, 0.2);
+  border-bottom-color: rgba(230, 230, 0, 0.5);
+}
+
+.note-yellow .note-drag-handle,
+.note-yellow .note-close {
+  color: #b8860b;
+}
+
+.note-yellow:hover {
+  box-shadow: 0 6px 20px rgba(255, 255, 0, 0.4), 
+              0 4px 8px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.6),
+              0 0 20px rgba(255, 255, 0, 0.3);
+}
+
+.note-pink {
+  background: linear-gradient(135deg, #ff69b4, #ffb6c1);
+  border-color: #ff1493;
+  box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3), 
+              0 2px 4px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.note-pink .note-header {
+  background: rgba(255, 105, 180, 0.2);
+  border-bottom-color: rgba(255, 20, 147, 0.5);
+}
+
+.note-pink .note-drag-handle,
+.note-pink .note-close {
+  color: #c71585;
+}
+
+.note-pink:hover {
+  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4), 
+              0 4px 8px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.6),
+              0 0 20px rgba(255, 105, 180, 0.3);
+}
+
+.note-green {
+  background: linear-gradient(135deg, #00ff7f, #90ee90);
+  border-color: #32cd32;
+  box-shadow: 0 4px 12px rgba(0, 255, 127, 0.3), 
+              0 2px 4px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.note-green .note-header {
+  background: rgba(0, 255, 127, 0.2);
+  border-bottom-color: rgba(50, 205, 50, 0.5);
+}
+
+.note-green .note-drag-handle,
+.note-green .note-close {
+  color: #228b22;
+}
+
+.note-green:hover {
+  box-shadow: 0 6px 20px rgba(0, 255, 127, 0.4), 
+              0 4px 8px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.6),
+              0 0 20px rgba(0, 255, 127, 0.3);
+}
+
+.note-blue {
+  background: linear-gradient(135deg, #87ceeb, #add8e6);
+  border-color: #4169e1;
+  box-shadow: 0 4px 12px rgba(135, 206, 235, 0.3), 
+              0 2px 4px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.note-blue .note-header {
+  background: rgba(135, 206, 235, 0.2);
+  border-bottom-color: rgba(65, 105, 225, 0.5);
+}
+
+.note-blue .note-drag-handle,
+.note-blue .note-close {
+  color: #1e90ff;
+}
+
+.note-blue:hover {
+  box-shadow: 0 6px 20px rgba(135, 206, 235, 0.4), 
+              0 4px 8px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.6),
+              0 0 20px rgba(135, 206, 235, 0.3);
+}
+
+.note-orange {
+  background: linear-gradient(135deg, #ffa500, #ffb347);
+  border-color: #ff8c00;
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3), 
+              0 2px 4px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.note-orange .note-header {
+  background: rgba(255, 165, 0, 0.2);
+  border-bottom-color: rgba(255, 140, 0, 0.5);
+}
+
+.note-orange .note-drag-handle,
+.note-orange .note-close {
+  color: #ff8c00;
+}
+
+.note-orange:hover {
+  box-shadow: 0 6px 20px rgba(255, 165, 0, 0.4), 
+              0 4px 8px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.6),
+              0 0 20px rgba(255, 165, 0, 0.3);
+}
+
+.note-purple {
+  background: linear-gradient(135deg, #dda0dd, #e6e6fa);
+  border-color: #9370db;
+  box-shadow: 0 4px 12px rgba(221, 160, 221, 0.3), 
+              0 2px 4px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.note-purple .note-header {
+  background: rgba(221, 160, 221, 0.2);
+  border-bottom-color: rgba(147, 112, 219, 0.5);
+}
+
+.note-purple .note-drag-handle,
+.note-purple .note-close {
+  color: #9370db;
+}
+
+.note-purple:hover {
+  box-shadow: 0 6px 20px rgba(221, 160, 221, 0.4), 
+              0 4px 8px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.6),
+              0 0 20px rgba(221, 160, 221, 0.3);
+}
+

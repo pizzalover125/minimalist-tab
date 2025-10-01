@@ -1,8 +1,10 @@
-// Main controller.
+// Main controller
 document.addEventListener("DOMContentLoaded", async () => {
   await loadSettings();
+  await loadStickyNotes();
 
   renderQuickLinks();
+  renderAllStickyNotes();
 
   if (pomodoroActive && pomodoroEndTime && pomodoroEndTime > new Date()) {
     startPomodoroTimer();

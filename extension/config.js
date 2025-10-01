@@ -46,6 +46,7 @@ const DEFAULT_SETTINGS = {
   timerActive: false,
   stopwatchActive: false,
   stopwatchElapsed: 0,
+  stickyNotes: [],
 };
 
 function loadSettings() {

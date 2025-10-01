@@ -21,7 +21,6 @@ function showCommandResult(message) {
 function showProbabilityResult(message, commandType) {
   const probabilityResult = document.getElementById("probabilityResult");
   
-  // If the same command is typed again, hide the display
   if (currentProbabilityDisplay && currentProbabilityCommand === commandType) {
     hideProbabilityResult();
     return;
@@ -253,6 +252,20 @@ function handleCommand(query) {
     saveSetting("useCelsius", useCelsius);
     updateWeather();
     return;
+  }
+
+  if (query.startsWith("/note")) {
+    const noteCommandRegex = /^\/note\s+"(.+?)"(?:\s+(\w+))?$/;
+    if (noteCommandRegex.test(query)) {
+      const [, noteText, color] = query.match(noteCommandRegex);
+      const validColors = ['yellow', 'pink', 'green', 'blue', 'orange', 'purple'];
+      const noteColor = color && validColors.includes(color.toLowerCase()) ? color.toLowerCase() : 'yellow';
+      createStickyNote(noteText, noteColor);
+      return;
+    } else {
+      showCommandResult('Usage: /note "your note text here" [color]. Colors: yellow, pink, green, blue, orange, purple');
+      return;
+    }
   }
 
   const isUrl = query.includes(".") && !query.includes(" ");
